@@ -9,6 +9,3 @@ health_check_path  = "/parse/health"
 #atlas_project_id   = "ProjectCAS"
 #atlas_cluster_name = "CASProject"
 #aws_account_id     = "065927858371"
-
-aws-access-key           = "AKIAQ6WM3JDB7AQY77YJ"
-aws-secret-key           = "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"
