@@ -1,8 +1,8 @@
 terraform {
   required_providers {
-#    mongodbatlas = {
-#      source = "mongodb/mongodbatlas"
-#    }
+    #mongodbatlas = {
+    #  source = "mongodb/mongodbatlas"
+    #}
     aws = {
       source  = "hashicorp/aws"
       version = "~> 4.25.0"
@@ -12,22 +12,33 @@ terraform {
 
 
 provider "aws" {
+  alias = "aws"
   region     = var.aws-region
   access_key = var.aws-access-key
   secret_key = var.aws-secret-key
 }
 
-# provider "mongodbatlas" {
-#  public_key = var.mongodbatlas_public_key
-#  private_key  = var.mongodbatlas_private_key
-# }
+#provider "mongodbatlas" {
+#  alias = "mongodbatlas"
+#  public_key  = var.mongodbatlas_public_key
+#  private_key = var.mongodbatlas_private_key
+#}
 
-# module "db" {
-#  source        = "./db"
-#  region        = var.region
-#  cluster_name  = var.cluster_name
-#  cluster_size  = var.cluster_size
-#  project_id    = var.project_id
+#module "db" {
+#  source             = "./db"
+#  providers = {
+#      mongodbatlas = mongodbatlas,
+#      aws = aws
+#  }
+#  atlasorgid         = var.atlasorgid
+#  atlas_project_id   = var.atlas_project_id
+#  atlas_cluster_name = var.atlas_cluster_name
+#  aws_region         = var.aws-region
+#  atlas_dbuser       = var.atlas_dbuser
+#  atlas_dbpassword   = var.atlas_dbpassword
+#  cidr               = var.cidr
+#  aws_account_id     = var.aws_account_id
+#  vpc_id              = module.vpc.id
 #}
 
 module "vpc" {
@@ -38,6 +49,7 @@ module "vpc" {
   public_subnets     = var.public_subnets
   availability_zones = var.availability_zones
   environment        = var.environment
+#  mongodbatlas_network_peering_connection_id = module.db.mongodbatlas_network_peering_connection_id
 }
 
 module "security_groups" {
@@ -91,8 +103,8 @@ module "ecs" {
     { name = "PORT",
     value = var.container_port }
   ]
-  // container_secrets      = module.secrets.secrets_map
   aws_ecr_repository_url = module.ecr.aws_ecr_repository_url
-  container_secrets_arns = module.secrets.application_secrets_arn
+  // container_secrets      = module.secrets.secrets_map
+  // container_secrets_arns = module.secrets.application_secrets_arn
 }
 

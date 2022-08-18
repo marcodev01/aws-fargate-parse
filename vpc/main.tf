@@ -131,7 +131,7 @@ resource "aws_flow_log" "main" {
 }
 
 resource "aws_cloudwatch_log_group" "main" {
-  name = "${var.name}-cloudwatch-log-group"
+  name = "${var.name}-cloudwatch-log-group" // comment out
 }
 
 resource "aws_iam_role" "vpc-flow-logs-role" {
@@ -193,16 +193,15 @@ output "private_subnets" {
 # altas mongodb
 /*
 resource "aws_route" "peeraccess" {
-  route_table_id            = aws_vpc.primary.main_route_table_id
-  destination_cidr_block    = var.atlas_vpc_cidr
-  vpc_peering_connection_id = mongodbatlas_network_peering.aws-atlas.connection_id
+  route_table_id            = aws_vpc.main.main_route_table_id
+  destination_cidr_block    = var.cidr
+  vpc_peering_connection_id = var.mongodbatlas_network_peering_connection_id
   depends_on                = [aws_vpc_peering_connection_accepter.peer]
 }
-*/
 
-/*
+
 resource "aws_vpc_peering_connection_accepter" "peer" {
-  vpc_peering_connection_id = mongodbatlas_network_peering.aws-atlas.connection_id
+  vpc_peering_connection_id = var.mongodbatlas_network_peering_connection_id
   auto_accept               = true
 }
 */

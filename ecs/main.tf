@@ -20,7 +20,7 @@ resource "aws_ecs_task_definition" "main" {
   task_role_arn            = aws_iam_role.ecs_task_role.arn 
   container_definitions = jsonencode([{
     name        = "${var.name}-container-${var.environment}"
-    image       = "${var.container_image}:latest"
+    image       = "${var.aws_ecr_repository_url}:latest"
     essential   = true
     environment = var.container_environment
     portMappings = [{
@@ -47,7 +47,7 @@ resource "aws_ecs_task_definition" "main" {
 
 # ROLES - in order to run our task - its needed to give the task a role (regulates what AWS services the task has access to)
 
-resource "aws_iam_role" "ecs_task_role" { // needed? -> refactor to data? https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_role https://www.terraform.io/language/data-sources
+resource "aws_iam_role" "ecs_task_role" { // -> refactor to data? https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_role https://www.terraform.io/language/data-sources
   name = "${var.name}-ecsTaskRole"
 
   assume_role_policy = jsonencode({
@@ -202,12 +202,12 @@ resource "aws_iam_policy" "secrets" {
 }
 EOF
 }
-*/
 
 resource "aws_iam_role_policy_attachment" "ecs-task-role-policy-attachment-for-secrets" {
   role       = aws_iam_role.ecs_task_execution_role.name
   policy_arn = aws_iam_policy.secrets.arn
 }
+*/
 
 // cloudwatch
 resource "aws_cloudwatch_log_group" "main" {

@@ -30,7 +30,7 @@ variable "container_memory" {
   description = "The amount (in MiB) of memory used by the task"
 }
 
-variable "container_image" {
+variable "aws_ecr_repository_url" {
   description = "Docker image to be launched"
 }
 
@@ -50,8 +50,10 @@ variable "container_environment" {
 variable "container_secrets" {
   description = "The container secret environmnent variables"
   type        = list
+  default = []
 }
 
 variable "container_secrets_arns" {
   description = "ARN for secrets"
+  default = "not used"
 }

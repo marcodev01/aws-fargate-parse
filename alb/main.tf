@@ -20,7 +20,7 @@ resource "aws_lb" "main" {
 # Target Group see: https://docs.aws.amazon.com/elasticloadbalancing/latest/application/introduction.html#application-load-balancer-components
 resource "aws_lb_target_group" "main" {
   name        = "${var.name}-tg-${var.environment}"
-  port        = 80
+  port        = 1337
   protocol    = "HTTP"
   vpc_id      = var.vpc_id
   target_type = "ip"
@@ -41,38 +41,50 @@ resource "aws_lb_target_group" "main" {
   }
 }
 
-# Redirect to https listener
-resource "aws_alb_listener" "http" {
+# Redirect traffic to target group
+resource "aws_alb_listener" "https" {
   load_balancer_arn = aws_lb.main.id
   port              = 80
   protocol          = "HTTP"
 
   default_action {
-    type = "redirect"
-
-    redirect {
-      port        = 443
-      protocol    = "HTTPS"
-      status_code = "HTTP_301"
-    }
+    type             = "forward"
+    target_group_arn = aws_lb_target_group.main.id
   }
 }
+
+# Redirect to https listener
+# resource "aws_alb_listener" "http" {
+#   load_balancer_arn = aws_lb.main.id
+#   port              = 80
+#   protocol          = "HTTP"
+
+#   default_action {
+#     type = "redirect"
+
+#     redirect {
+#       port        = 443
+#       protocol    = "HTTPS"
+#       status_code = "HTTP_301"
+#     }
+#   }
+# }
 
 # Redirect traffic to target group
-resource "aws_alb_listener" "https" {
-  load_balancer_arn = aws_lb.main.id
-  port              = 443
-  protocol          = "HTTPS"
+# resource "aws_alb_listener" "https" {
+#   load_balancer_arn = aws_lb.main.id
+#   port              = 443
+#   protocol          = "HTTPS"
 
-  ssl_policy        = "ELBSecurityPolicy-2016-08"
-  certificate_arn   = var.alb_tls_cert_arn
+#   ssl_policy        = "ELBSecurityPolicy-2016-08"
+#   certificate_arn   = var.alb_tls_cert_arn
 
-  default_action {
-    type             = "forward"
-    target_group_arn = aws_alb_target_group.main.id
-  }
-}
+#   default_action {
+#     type             = "forward"
+#     target_group_arn = aws_lb_target_group.main.id
+#   }
+# }
 
 output "aws_alb_target_group_arn" {
-  value = aws_alb_target_group.main.arn
+  value = aws_lb_target_group.main.arn
 }
