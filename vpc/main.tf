@@ -110,6 +110,10 @@ resource "aws_nat_gateway" "main" {
   }
 }
 
+output "nat_gateway_public_ip" {
+  value = aws_nat_gateway.main.public_ip
+}
+
 
 # ElasticIP associated to nat
 resource "aws_eip" "nat" {
@@ -190,7 +194,8 @@ output "private_subnets" {
   value = aws_subnet.private
 }
 
-# altas mongodb
+# Altas mongodb network peering NOT available for free tier M0
+# See: https://www.mongodb.com/docs/atlas/security-vpc-peering/#std-label-vpc-peering 
 /*
 resource "aws_route" "peeraccess" {
   route_table_id            = aws_vpc.main.main_route_table_id

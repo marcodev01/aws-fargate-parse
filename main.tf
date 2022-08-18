@@ -1,8 +1,8 @@
 terraform {
   required_providers {
-    #mongodbatlas = {
-    #  source = "mongodb/mongodbatlas"
-    #}
+    mongodbatlas = {
+      source = "mongodb/mongodbatlas"
+    }
     aws = {
       source  = "hashicorp/aws"
       version = "~> 4.25.0"
@@ -18,28 +18,29 @@ provider "aws" {
   secret_key = var.aws-secret-key
 }
 
-#provider "mongodbatlas" {
-#  alias = "mongodbatlas"
-#  public_key  = var.mongodbatlas_public_key
-#  private_key = var.mongodbatlas_private_key
-#}
+provider "mongodbatlas" {
+  alias = "mongodbatlas"
+  public_key  = var.mongodbatlas_public_key
+  private_key = var.mongodbatlas_private_key
+}
 
-#module "db" {
-#  source             = "./db"
-#  providers = {
-#      mongodbatlas = mongodbatlas,
-#      aws = aws
-#  }
-#  atlasorgid         = var.atlasorgid
-#  atlas_project_id   = var.atlas_project_id
-#  atlas_cluster_name = var.atlas_cluster_name
-#  aws_region         = var.aws-region
-#  atlas_dbuser       = var.atlas_dbuser
-#  atlas_dbpassword   = var.atlas_dbpassword
-#  cidr               = var.cidr
-#  aws_account_id     = var.aws_account_id
-#  vpc_id              = module.vpc.id
-#}
+module "db" {
+  source             = "./db"
+  providers = {
+      mongodbatlas = mongodbatlas,
+      aws = aws
+  }
+  atlasorgid         = var.atlasorgid
+  atlas_project_id   = var.atlas_project_id
+  atlas_cluster_name = var.atlas_cluster_name
+  aws_region         = var.aws-region
+  atlas_dbuser       = var.atlas_dbuser
+  atlas_dbpassword   = var.atlas_dbpassword
+  cidr               = var.cidr
+  aws_account_id     = var.aws_account_id
+  vpc_id              = module.vpc.id
+  nat_gateway_public_ip = module.vpc.nat_gateway_public_ip
+}
 
 module "vpc" {
   source             = "./vpc"
@@ -49,7 +50,6 @@ module "vpc" {
   public_subnets     = var.public_subnets
   availability_zones = var.availability_zones
   environment        = var.environment
-#  mongodbatlas_network_peering_connection_id = module.db.mongodbatlas_network_peering_connection_id
 }
 
 module "security_groups" {

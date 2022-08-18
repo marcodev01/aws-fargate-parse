@@ -34,3 +34,7 @@ variable "cidr" {
 variable "aws_account_id" {
   description = "aws_account_id"
 }
+
+variable "nat_gateway_public_ip" {
+  description = "List of public gateway IPs"
+}

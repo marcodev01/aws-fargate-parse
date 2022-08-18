@@ -40,6 +40,15 @@ resource "mongodbatlas_database_user" "db-user" {
   depends_on = [mongodbatlas_project.aws_atlas]
 }
 
+resource "mongodbatlas_project_ip_access_list" "test" {
+  project_id = mongodbatlas_project.aws_atlas.id
+  cidr_block = var.cidr
+  comment    = "cidr block for AWS VPC"
+}
+
+# Altas mongodb network peering NOT available for free tier M0
+# See: https://www.mongodb.com/docs/atlas/security-vpc-peering/#std-label-vpc-peering 
+/*
 resource "mongodbatlas_network_container" "atlas_container" {
   atlas_cidr_block = var.cidr
   project_id       = mongodbatlas_project.aws_atlas.id
@@ -64,12 +73,7 @@ resource "mongodbatlas_network_peering" "aws-atlas" {
   aws_account_id         = var.aws_account_id
 }
 
-resource "mongodbatlas_project_ip_access_list" "test" {
-  project_id = mongodbatlas_project.aws_atlas.id
-  cidr_block = var.cidr
-  comment    = "cidr block for AWS VPC"
-}
-
 output "mongodbatlas_network_peering_connection_id" {
   value = mongodbatlas_network_peering.aws-atlas.connection_id
 }
+*/

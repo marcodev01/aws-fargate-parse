@@ -53,38 +53,43 @@ resource "aws_alb_listener" "https" {
   }
 }
 
-# Redirect to https listener
-# resource "aws_alb_listener" "http" {
-#   load_balancer_arn = aws_lb.main.id
-#   port              = 80
-#   protocol          = "HTTP"
-
-#   default_action {
-#     type = "redirect"
-
-#     redirect {
-#       port        = 443
-#       protocol    = "HTTPS"
-#       status_code = "HTTP_301"
-#     }
-#   }
-# }
-
-# Redirect traffic to target group
-# resource "aws_alb_listener" "https" {
-#   load_balancer_arn = aws_lb.main.id
-#   port              = 443
-#   protocol          = "HTTPS"
-
-#   ssl_policy        = "ELBSecurityPolicy-2016-08"
-#   certificate_arn   = var.alb_tls_cert_arn
-
-#   default_action {
-#     type             = "forward"
-#     target_group_arn = aws_lb_target_group.main.id
-#   }
-# }
-
 output "aws_alb_target_group_arn" {
   value = aws_lb_target_group.main.arn
 }
+
+# https endpoint cannot used since aws certificate manager 
+# only supports tls certificates for user controlled dmoain names
+
+# Redirect to https listener
+/* 
+resource "aws_alb_listener" "http" {
+  load_balancer_arn = aws_lb.main.id
+  port              = 80
+  protocol          = "HTTP"
+
+  default_action {
+    type = "redirect"
+
+    redirect {
+      port        = 443
+      protocol    = "HTTPS"
+      status_code = "HTTP_301"
+    }
+  }
+}
+
+ # Redirect traffic to target group
+ resource "aws_alb_listener" "https" {
+   load_balancer_arn = aws_lb.main.id
+   port              = 443
+   protocol          = "HTTPS"
+
+   ssl_policy        = "ELBSecurityPolicy-2016-08"
+   certificate_arn   = var.alb_tls_cert_arn
+
+   default_action {
+     type             = "forward"
+     target_group_arn = aws_lb_target_group.main.id
+   }
+ }
+*/

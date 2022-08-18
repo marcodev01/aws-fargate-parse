@@ -21,7 +21,3 @@ variable "private_subnets" {
 variable "availability_zones" {
   description = "List of availability zones"
 }
-
-#variable "mongodbatlas_network_peering_connection_id" {
-#  description = "mongodbatlas_network_peering_connection_id"
-#}
