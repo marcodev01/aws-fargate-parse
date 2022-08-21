@@ -50,10 +50,4 @@ variable "container_environment" {
 variable "container_secrets" {
   description = "The container secret environmnent variables"
   type        = list
-  default = []
-}
-
-variable "container_secrets_arns" {
-  description = "ARN for secrets"
-  default = "not used"
 }

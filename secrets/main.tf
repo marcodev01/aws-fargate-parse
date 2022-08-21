@@ -1,43 +1,24 @@
 
-resource "aws_ssm_parameter" "parse_app_id" {
-  name = "/demo/parse-server/app_id"
-  type = "String"
-  value = var.parse_app_id
+resource "aws_ssm_parameter" "secret" {
+  count = length(var.application_secrets)
+
+  name = var.application_secrets[count.index].name
+  type = var.application_secrets[count.index].type
+  value = var.application_secrets[count.index].val
 
   tags = {
-    environment = "demo"
+    environment = var.environment
   }
 }
 
-resource "aws_ssm_parameter" "parse_master_key" {
-  name = "/demo/parse-server/master_key"
-  type = "String"
-  value = var.parse_master_key
-
-  tags = {
-    environment = "demo"
-  }
+locals {
+  secretMap = [for secret in var.application_secrets : {
+      "name"      : "${secret.env}",
+      "valueFrom" : "arn:aws:ssm:${var.aws-region}:${var.aws-account-id}:parameter${secret.name}"
+    }
+  ]
 }
 
-resource "aws_ssm_parameter" "data_base_uri" {
-  name = "/demo/database/uri"
-  type = "String"
-  value = var.data_base_uri
-
-  tags = {
-    environment = "demo"
-  }
-}
-
-resource "aws_ssm_parameter" "parse_server_url" {
-  name = "/demo/parse-server/server_url"
-  type = "String"
-  value = var.parse_server_url
-
-  tags = {
-    environment = "demo"
-  }
-}
 
 
 

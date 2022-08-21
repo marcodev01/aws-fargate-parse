@@ -1,5 +1,6 @@
 variable "name" {
   description = "name of stack"
+  type        = string
 }
 
 variable "aws-access-key" {
@@ -12,84 +13,79 @@ variable "aws-secret-key" {
   type      = string
 }
 
-#variable "application-secrets" {
-#  description = "A map of secrets that is passed into the application. Formatted like ENV_VAR = VALUE"
-#  type        = map(any)
-#}
+variable "aws-account-id" {
+  sensitive = true
+  type      = string
+}
+
+variable "application_secrets" {
+  sensitive   = true
+  description = "an object of secrets that is passed into the container"
+  type        = list(object({ env=string, name=string, val=string, type=string }))
+}
 
 variable "container_port" {
   description = "port where Docker is exposed"
+  type        =  number
 }
 
 variable "health_check_path" {
-  description = "Http path for task health check"
+  description = "http path for task health check"
+  type        = string
 }
 
-// OPTIONAL VARIABLES
-
-variable "tsl_certificate_arn" {
-  description = "The ARN of the certificate that the ALB uses for https"
-  default     = "UNDEFINED" # not used
-}
+// DEFAULT VARIABLES
 
 variable "environment" {
-  description = "environment: dev, test, prod"
+  description = "environment: e.g. dev, test, ref, prod"
+  type        = string
   default     = "dev"
 }
 
 variable "aws-region" {
-  type        = string
   description = "AWS region"
+  type        = string
   default     = "eu-central-1"
 }
 
 variable "availability_zones" {
   description = "list of availability zones, defaults to all AZ of the region"
+  type        = list(string)
   default     = ["eu-central-1a", "eu-central-1b", "eu-central-1c"]
 }
 
 variable "cidr" {
   description = "The CIDR block for the VPC."
+  type        = string
   default     = "10.0.0.0/16"
 }
 
 variable "private_subnets" {
   description = "list of CIDRs for private subnets in VPC"
+  type        = list(string)
   default     = ["10.0.0.0/24", "10.0.1.0/24", "10.0.2.0/24"]
 }
 
 variable "public_subnets" {
   description = "list of CIDRs for public subnets in VPC"
+  type        = list(string)
   default     = ["10.0.3.0/24", "10.0.4.0/24", "10.0.5.0/24"]
 }
 
 variable "service_desired_count" {
   description = "Number of tasks running in parallel"
+  type        =  number
   default     = 2
 }
 
 variable "container_cpu" {
   description = "The number of cpu units used by the task"
+  type        =  number
   default     = 256
 }
 
 variable "container_memory" {
   description = "The amount (in MiB) of memory used by the task"
+  type        =  number
   default     = 512
-}
-
-variable "parse_app_id" {
-  description = "app id of parse server"
-}
-
-variable "parse_master_key" {
-  description = "master key of parse server"
-}
-
-variable "data_base_uri" {
-  description = "uri of connecting database"
-}
-
-variable "parse_server_url" {
-  description = "url of parse server"
 }

@@ -51,10 +51,10 @@ module "ecr" {
 
 module "secrets" {
   source              = "./secrets"
-  parse_app_id        = var.parse_app_id
-  parse_master_key    = var.parse_master_key
-  data_base_uri       = var.data_base_uri
-  parse_server_url    = var.parse_server_url
+  application_secrets = var.application_secrets
+  aws-region          = var.aws-region
+  aws-account-id      = var.aws-account-id
+  environment         = var.environment
 }
 
 module "ecs" {
@@ -70,11 +70,9 @@ module "ecs" {
   container_memory            = var.container_memory
   service_desired_count       = var.service_desired_count
   container_environment = [
-    { name = "LOG_LEVEL",
-    value = "DEBUG" },
-    { name = "PORT",
-    value = var.container_port }
+    { name = "LOG_LEVEL", value = "DEBUG" },
+    { name = "PORT", value = var.container_port }
   ]
   aws_ecr_repository_url = module.ecr.aws_ecr_repository_url
-  container_secrets      = module.secrets.container_secrets
+  container_secrets      = module.secrets.container_secrets_map
 }
