@@ -1,22 +1,23 @@
-# ECS CLUSTER
-# the cluster is in the end nothing more than a home for tasks and services
+### ECS CLUSTER ###
+
 resource "aws_ecs_cluster" "main" {
   name = "${var.name}-cluster-${var.environment}"
   tags = {
     Name        = "${var.name}-cluster-${var.environment}"
     Environment = var.environment
   }
-  # conatinerInsights?
+  # TODO: conatinerInsights?
 }
 
-// create task defintion
+### ECS TASK ###
+
 resource "aws_ecs_task_definition" "main" {
   family                   = "${var.name}-task-${var.environment}"
   network_mode             = "awsvpc"
   requires_compatibilities = ["FARGATE"]
   cpu                      = var.container_cpu
   memory                   = var.container_memory
-  execution_role_arn       = aws_iam_role.ecs_task_execution_role.arn // arn = amazon-resource-name
+  execution_role_arn       = aws_iam_role.ecs_task_execution_role.arn
   task_role_arn            = aws_iam_role.ecs_task_role.arn 
   container_definitions = jsonencode([{
     name        = "${var.name}-container-${var.environment}"
@@ -36,7 +37,20 @@ resource "aws_ecs_task_definition" "main" {
         awslogs-region        = var.region
       }
     }
-    // secrets = var.container_secrets
+    secrets = [
+      {
+        "name": "DATABASE_URI",
+        "valueFrom": "arn:aws:ssm:${var.region}:065927858371:parameter/demo/database/uri"
+      },
+      {
+        "name": "PARSE_MASTER_KEY",
+        "valueFrom": "arn:aws:ssm:${var.region}:065927858371:parameter/demo/parse-server/master_key"
+      },      
+      {
+        "name": "PARSE_APP_ID",
+        "valueFrom": "arn:aws:ssm:${var.region}:065927858371:parameter/demo/parse-server/app_id"
+      },
+    ]
   }])
 
   tags = {
@@ -45,47 +59,29 @@ resource "aws_ecs_task_definition" "main" {
   }
 }
 
-# ROLES - in order to run our task - its needed to give the task a role (regulates what AWS services the task has access to)
+### ROLES ### 
 
-resource "aws_iam_role" "ecs_task_role" { // -> refactor to data? https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_role https://www.terraform.io/language/data-sources
+resource "aws_iam_role" "ecs_task_role" {
   name = "${var.name}-ecsTaskRole"
-
-  assume_role_policy = jsonencode({
-  Version = "2012-10-17",
-  Statement = [
-    {
-      Action = "sts:AssumeRole",
-      Effect = "Allow",
-      Sid = "",
-      Principal = {
-        Service = "ecs-tasks.amazonaws.com"
-      },
-    }
-  ]
-})
+  path = "/custom/ecs/"
+  assume_role_policy = data.aws_iam_policy_document.instance-assume-role-policy.json
 }
-
-// task execution role - predefined AWS role
-// This is due to the fact that the tasks will be executed “serverless” with the Fargate configuration.
-// This means there’s no EC2 instances involved, meaning the permissions that usually go to the EC2 instances have to go somewhere else: the Fargate service. 
+ 
 resource "aws_iam_role" "ecs_task_execution_role" {
   name = "${var.name}-ecsTaskExecutionRole"
-
-  assume_role_policy = <<EOF
-{
-  "Version": "2012-10-17",
-  "Statement": [
-    {
-      "Action": "sts:AssumeRole",
-      "Principal": {
-        "Service": "ecs-tasks.amazonaws.com"
-      },
-      "Effect": "Allow",
-      "Sid": ""
-    }
-  ]
+  path = "/custom/ecs/"
+  assume_role_policy = data.aws_iam_policy_document.instance-assume-role-policy.json
 }
-EOF
+
+data "aws_iam_policy_document" "instance-assume-role-policy" {
+  statement {
+    actions = ["sts:AssumeRole"]
+ 
+    principals {
+      type        = "Service"
+      identifiers = ["ecs-tasks.amazonaws.com"]
+    }
+  }
 }
 
 resource "aws_iam_role_policy_attachment" "ecs-task-execution-role-policy-attachment" {
@@ -94,8 +90,15 @@ resource "aws_iam_role_policy_attachment" "ecs-task-execution-role-policy-attach
 }
 
 
-// ECS SERVICE - configuration that says how many of my tasks should run in parallel, 
-// and makes sure that there always are enough health taks running
+resource "aws_iam_role_policy_attachment" "ecs-resources-ssm-policy" {
+  role       = aws_iam_role.ecs_task_execution_role.name
+  policy_arn = "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"
+}
+
+
+
+### ECS SERVICE ###
+
 resource "aws_ecs_service" "main" {
   name                               = "${var.name}-service-${var.environment}"
   cluster                            = aws_ecs_cluster.main.id
@@ -119,9 +122,8 @@ resource "aws_ecs_service" "main" {
     container_port   = var.container_port
   }
 
-  # we ignore task_definition changes as the revision changes on deploy
-  # of a new version of the application
-  # desired_count is ignored as it can change due to autoscaling policy
+  # ignore task_definition changes since the revision changes on deploy of a new version of the application
+  # ignore desired_count since it can change due to autoscaling policy
   lifecycle {
     ignore_changes = [task_definition, desired_count]
   }
@@ -129,8 +131,8 @@ resource "aws_ecs_service" "main" {
 
 
 
-// AUTOSCALING
-// autoscaling target
+### AUTOSCALING ###
+
 resource "aws_appautoscaling_target" "ecs_target" {
   max_capacity       = 4
   min_capacity       = 1
@@ -139,9 +141,6 @@ resource "aws_appautoscaling_target" "ecs_target" {
   service_namespace  = "ecs"
 }
 
-// rules on when to scale the number of tasks
-
-// memory based autoscaling rule
 resource "aws_appautoscaling_policy" "ecs_policy_memory" {
   name               = "memory-autoscaling"
   policy_type        = "TargetTrackingScaling"
@@ -160,7 +159,6 @@ resource "aws_appautoscaling_policy" "ecs_policy_memory" {
   }
 }
 
-// cpu based autoscaling rule
 resource "aws_appautoscaling_policy" "ecs_policy_cpu" {
   name               = "cpu-autoscaling"
   policy_type        = "TargetTrackingScaling"
@@ -209,7 +207,7 @@ resource "aws_iam_role_policy_attachment" "ecs-task-role-policy-attachment-for-s
 }
 */
 
-// cloudwatch
+### Cloudwatch ###
 resource "aws_cloudwatch_log_group" "main" {
   name = "/ecs/${var.name}-task-${var.environment}"
 

@@ -3,11 +3,13 @@ variable "name" {
 }
 
 variable "aws-access-key" {
-  type = string
+  sensitive = true
+  type      = string
 }
 
 variable "aws-secret-key" {
-  type = string
+  sensitive = true
+  type      = string
 }
 
 #variable "application-secrets" {
@@ -76,29 +78,18 @@ variable "container_memory" {
   default     = 512
 }
 
-
-/*
-variable "aws_account_id" {
-  description = "aws_account_id"
+variable "parse_app_id" {
+  description = "app id of parse server"
 }
 
-variable "atlas_dbuser" {
-  description = "atlas_dbuser"
+variable "parse_master_key" {
+  description = "master key of parse server"
 }
 
-variable "atlas_dbpassword" {
-  description = "atlas_dbpassword"
+variable "data_base_uri" {
+  description = "uri of connecting database"
 }
 
-variable "atlasorgid" {
-  description = "id of atlas org"
+variable "parse_server_url" {
+  description = "url of parse server"
 }
-
-variable "atlas_project_id" {
-  description = "id of atlas project"
-}
-
-variable "atlas_cluster_name" {
-  description = "atlas cluster anme"
-}
-*/

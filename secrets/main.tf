@@ -1,3 +1,46 @@
+
+resource "aws_ssm_parameter" "parse_app_id" {
+  name = "/demo/parse-server/app_id"
+  type = "String"
+  value = var.parse_app_id
+
+  tags = {
+    environment = "demo"
+  }
+}
+
+resource "aws_ssm_parameter" "parse_master_key" {
+  name = "/demo/parse-server/master_key"
+  type = "String"
+  value = var.parse_master_key
+
+  tags = {
+    environment = "demo"
+  }
+}
+
+resource "aws_ssm_parameter" "data_base_uri" {
+  name = "/demo/database/uri"
+  type = "String"
+  value = var.data_base_uri
+
+  tags = {
+    environment = "demo"
+  }
+}
+
+resource "aws_ssm_parameter" "parse_server_url" {
+  name = "/demo/parse-server/server_url"
+  type = "String"
+  value = var.parse_server_url
+
+  tags = {
+    environment = "demo"
+  }
+}
+
+
+
 # This file creates secrets in the AWS Secret Manager
 # Note that this does not contain any actual secret values
 # make sure to not commit any secret values to git!

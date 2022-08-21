@@ -1,4 +1,4 @@
-# APPLICATION LOAD BALANCER
+### APPLICATION LOAD BALANCER ###
 
 resource "aws_lb" "main" {
   name               = "${var.name}-alb-${var.environment}"
@@ -15,8 +15,6 @@ resource "aws_lb" "main" {
   }
 }
 
-# Traffic funneld to the traget group
-# This target group is later used by the ECS service to propagate the available tasks to
 # Target Group see: https://docs.aws.amazon.com/elasticloadbalancing/latest/application/introduction.html#application-load-balancer-components
 resource "aws_lb_target_group" "main" {
   name        = "${var.name}-tg-${var.environment}"
@@ -42,7 +40,8 @@ resource "aws_lb_target_group" "main" {
 }
 
 # Redirect traffic to target group
-resource "aws_alb_listener" "https" {
+# Note: https endpoint cannot used since aws certificate manager only supports tls certificates for user controlled dmoain names
+resource "aws_alb_listener" "http" {
   load_balancer_arn = aws_lb.main.id
   port              = 80
   protocol          = "HTTP"
@@ -52,44 +51,3 @@ resource "aws_alb_listener" "https" {
     target_group_arn = aws_lb_target_group.main.id
   }
 }
-
-output "aws_alb_target_group_arn" {
-  value = aws_lb_target_group.main.arn
-}
-
-# https endpoint cannot used since aws certificate manager 
-# only supports tls certificates for user controlled dmoain names
-
-# Redirect to https listener
-/* 
-resource "aws_alb_listener" "http" {
-  load_balancer_arn = aws_lb.main.id
-  port              = 80
-  protocol          = "HTTP"
-
-  default_action {
-    type = "redirect"
-
-    redirect {
-      port        = 443
-      protocol    = "HTTPS"
-      status_code = "HTTP_301"
-    }
-  }
-}
-
- # Redirect traffic to target group
- resource "aws_alb_listener" "https" {
-   load_balancer_arn = aws_lb.main.id
-   port              = 443
-   protocol          = "HTTPS"
-
-   ssl_policy        = "ELBSecurityPolicy-2016-08"
-   certificate_arn   = var.alb_tls_cert_arn
-
-   default_action {
-     type             = "forward"
-     target_group_arn = aws_lb_target_group.main.id
-   }
- }
-*/

@@ -1,4 +1,5 @@
-# VPC with attached internet gateway
+### VPC ###
+
 resource "aws_vpc" "main" {
   cidr_block           = var.cidr
   enable_dns_support   = true
@@ -20,7 +21,6 @@ resource "aws_internet_gateway" "main" {
 }
 
 
-# private subnet (per availability zone)
 resource "aws_subnet" "private" {
   vpc_id            = aws_vpc.main.id
   cidr_block        = element(var.private_subnets, count.index)
@@ -34,7 +34,6 @@ resource "aws_subnet" "private" {
 }
 
 
-#  public subnet (per availability zone)
 resource "aws_subnet" "public" {
   vpc_id                  = aws_vpc.main.id
   cidr_block              = element(var.public_subnets, count.index)
@@ -49,7 +48,7 @@ resource "aws_subnet" "public" {
 }
 
 
-# routing tables (public subnet), going through internet gateway
+# public subnet traffic through internet gateway
 resource "aws_route_table" "public" {
   vpc_id = aws_vpc.main.id
 
@@ -72,7 +71,7 @@ resource "aws_route_table_association" "public" {
 }
 
 
-# routing tables (private subnet), traffic routed through NAT gateway 
+# private subnet traffic routed through NAT gateway 
 resource "aws_route_table" "private" {
   count  = length(var.private_subnets)
   vpc_id = aws_vpc.main.id
@@ -97,7 +96,7 @@ resource "aws_route_table_association" "private" {
 }
 
 
-# private subnets -> attach NAT gateways for communication with the outside world
+# Attach NAT gateway to each availibility zone (one private subnet per AZ) for communication with the outside world
 resource "aws_nat_gateway" "main" {
   count         = length(var.private_subnets)
   allocation_id = element(aws_eip.nat.*.id, count.index)
@@ -110,12 +109,7 @@ resource "aws_nat_gateway" "main" {
   }
 }
 
-output "nat_gateway_public_ip" {
-  value = aws_nat_gateway.main.public_ip
-}
-
-
-# ElasticIP associated to nat
+# ElasticIP associated to each NAT Gateway
 resource "aws_eip" "nat" {
   count = length(var.private_subnets)
   vpc = true
@@ -126,7 +120,7 @@ resource "aws_eip" "nat" {
   }
 }
 
-#CloudWatch
+### CloudWatch ###
 resource "aws_flow_log" "main" {
   iam_role_arn    = aws_iam_role.vpc-flow-logs-role.arn
   log_destination = aws_cloudwatch_log_group.main.arn
@@ -135,78 +129,47 @@ resource "aws_flow_log" "main" {
 }
 
 resource "aws_cloudwatch_log_group" "main" {
-  name = "${var.name}-cloudwatch-log-group" // comment out
+  name = "${var.name}-cloudwatch-log-group"
 }
 
 resource "aws_iam_role" "vpc-flow-logs-role" {
   name = "${var.name}-vpc-flow-logs-role"
+  path = "/custom/vpc/"
 
-  assume_role_policy = <<EOF
-{
-  "Version": "2012-10-17",
-  "Statement": [
+  assume_role_policy = jsonencode({
+  Version = "2012-10-17",
+  Statement = [
     {
-      "Sid": "",
-      "Effect": "Allow",
-      "Principal": {
-        "Service": "vpc-flow-logs.amazonaws.com"
-      },
-      "Action": "sts:AssumeRole"
+      Action = "sts:AssumeRole",
+      Effect = "Allow",
+      Sid = "",
+      Principal = {
+        Service = "vpc-flow-logs.amazonaws.com"
+      }
     }
   ]
+})
 }
-EOF
-}
+
 
 resource "aws_iam_role_policy" "vpc-flow-logs-policy" {
   name = "${var.name}-vpc-flow-logs-policy"
   role = aws_iam_role.vpc-flow-logs-role.id
 
-  policy = <<EOF
-{
-  "Version": "2012-10-17",
-  "Statement": [
+  policy = jsonencode({
+  Version = "2012-10-17",
+  Statement = [
     {
-      "Action": [
+      Action =  [
         "logs:CreateLogGroup",
         "logs:CreateLogStream",
         "logs:PutLogEvents",
         "logs:DescribeLogGroups",
         "logs:DescribeLogStreams"
       ],
-      "Effect": "Allow",
-      "Resource": "*"
+      Effect = "Allow",
+      Resource = "*"
     }
   ]
+})
 }
-EOF
-}
-
-output "id" {
-  value = aws_vpc.main.id
-}
-
-output "public_subnets" {
-  value = aws_subnet.public
-}
-
-output "private_subnets" {
-  value = aws_subnet.private
-}
-
-# Altas mongodb network peering NOT available for free tier M0
-# See: https://www.mongodb.com/docs/atlas/security-vpc-peering/#std-label-vpc-peering 
-/*
-resource "aws_route" "peeraccess" {
-  route_table_id            = aws_vpc.main.main_route_table_id
-  destination_cidr_block    = var.cidr
-  vpc_peering_connection_id = var.mongodbatlas_network_peering_connection_id
-  depends_on                = [aws_vpc_peering_connection_accepter.peer]
-}
-
-
-resource "aws_vpc_peering_connection_accepter" "peer" {
-  vpc_peering_connection_id = var.mongodbatlas_network_peering_connection_id
-  auto_accept               = true
-}
-*/

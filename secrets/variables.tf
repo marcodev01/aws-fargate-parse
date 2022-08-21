@@ -12,3 +12,19 @@ variable "application-secrets" {
   type        = map
 }
 */
+
+variable "parse_app_id" {
+  description = "app id of parse server"
+}
+
+variable "parse_master_key" {
+  description = "master key of parse server"
+}
+
+variable "data_base_uri" {
+  description = "uri of connecting database"
+}
+
+variable "parse_server_url" {
+  description = "url of parse server"
+}
