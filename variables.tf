@@ -21,12 +21,12 @@ variable "aws-account-id" {
 variable "application_secrets" {
   sensitive   = true
   description = "an object of secrets that is passed into the container"
-  type        = list(object({ env=string, name=string, val=string, type=string }))
+  type        = list(object({ env = string, name = string, val = string, type = string }))
 }
 
 variable "container_port" {
   description = "port where Docker is exposed"
-  type        =  number
+  type        = number
 }
 
 variable "health_check_path" {
@@ -74,18 +74,18 @@ variable "public_subnets" {
 
 variable "service_desired_count" {
   description = "Number of tasks running in parallel"
-  type        =  number
+  type        = number
   default     = 2
 }
 
 variable "container_cpu" {
   description = "The number of cpu units used by the task"
-  type        =  number
+  type        = number
   default     = 256
 }
 
 variable "container_memory" {
   description = "The amount (in MiB) of memory used by the task"
-  type        =  number
+  type        = number
   default     = 512
 }

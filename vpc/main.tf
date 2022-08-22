@@ -129,7 +129,8 @@ resource "aws_flow_log" "main" {
 }
 
 resource "aws_cloudwatch_log_group" "main" {
-  name = "${var.name}-cloudwatch-log-group"
+  name = "${var.name}-vpc-flow-log-group"
+  retention_in_days = "60"
 }
 
 resource "aws_iam_role" "vpc-flow-logs-role" {

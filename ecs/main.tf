@@ -2,11 +2,15 @@
 
 resource "aws_ecs_cluster" "main" {
   name = "${var.name}-cluster-${var.environment}"
+
+  setting {
+    name  = "containerInsights"
+    value = "enabled"
+  }
   tags = {
     Name        = "${var.name}-cluster-${var.environment}"
     Environment = var.environment
   }
-  # TODO: conatinerInsights?
 }
 
 ### ECS TASK ###
@@ -23,7 +27,7 @@ resource "aws_ecs_task_definition" "main" {
     name        = "${var.name}-container-${var.environment}"
     image       = "${var.aws_ecr_repository_url}:latest"
     essential   = true
-    environment = var.container_environment
+    environment = var.container_environment_vars
     portMappings = [{
       protocol      = "tcp"
       containerPort = var.container_port
@@ -32,8 +36,9 @@ resource "aws_ecs_task_definition" "main" {
     logConfiguration = {
       logDriver = "awslogs"
       options = {
-        awslogs-group         = aws_cloudwatch_log_group.main.name
+        awslogs-group         = aws_cloudwatch_log_group.task.name
         awslogs-stream-prefix = "ecs"
+        awslogs-create-group  = "true"
         awslogs-region        = var.region
       }
     }
@@ -165,8 +170,9 @@ resource "aws_appautoscaling_policy" "ecs_policy_cpu" {
 }
 
 ### Cloudwatch ###
-resource "aws_cloudwatch_log_group" "main" {
+resource "aws_cloudwatch_log_group" "task" {
   name = "/ecs/${var.name}-task-${var.environment}"
+  retention_in_days = "60"
 
   tags = {
     Name        = "${var.name}-task-${var.environment}"

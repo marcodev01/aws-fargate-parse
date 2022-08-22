@@ -42,12 +42,12 @@ variable "service_desired_count" {
   description = "Number of services running in parallel"
 }
 
-variable "container_environment" {
+variable "container_environment_vars" {
   description = "The container environmnent variables"
-  type        = list
+  type        = list(object({ name = string, value = any }))
 }
 
 variable "container_secrets" {
-  description = "The container secret environmnent variables"
-  type        = list
+  description = "The container ssm secret variables"
+  type        = list(object({ name = string, valueFrom = string }))
 }
