@@ -39,7 +39,7 @@ module "alb" {
   subnets             = module.vpc.public_subnets
   environment         = var.environment
   alb_security_groups = [module.security_groups.alb]
-  health_check_path   = var.health_check_path
+  health_check_path   = "${var.parse_mount_path}/health"
 }
 
 module "ecr" {
@@ -72,7 +72,10 @@ module "ecs" {
   container_environment_vars = [
     { name = "LOG_LEVEL", value = "DEBUG" },
     { name = "PORT", value = var.container_port },
-    { name = "SERVER_URL", value = "http://${module.alb.aws_lb_dns}/parse/" }
+    { name = "SERVER_URL", value = "http://${module.alb.aws_lb_dns}/${var.parse_mount_path}/" },
+    { name = "PARSE_MOUNT", value = var.parse_mount_path },
+    { name = "DASHBOARD_MOUNT", value = var.dashboard_mount_path },
+    { name = "APP_NAME", value = "${var.name}_${var.environment}" }
   ]
   aws_ecr_repository_url = module.ecr.aws_ecr_repository_url
   container_secrets      = module.secrets.container_ssm_secrets_map

@@ -29,8 +29,13 @@ variable "container_port" {
   type        = number
 }
 
-variable "health_check_path" {
-  description = "http path for task health check"
+variable "parse_mount_path" {
+  description = "path on which Parse API is served, e.g.' /parse'"
+  type        = string
+}
+
+variable "dashboard_mount_path" {
+  description = "path on which Parse Dashboard is served, e.g.' /dashboard'"
   type        = string
 }
 
