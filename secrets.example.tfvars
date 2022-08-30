@@ -19,6 +19,12 @@ application_secrets = [
     type = "SecureString"
   },
   {
+    env  = "READ_ONLY_MASTER_KEY",
+    name = "/demo/parse-server/read_only_master_key",
+    val  = "<READ_ONLY_MASTER_KEY>",
+    type = "SecureString"
+  },
+  {
     env  = "PARSE_SERVER_APPLICATION_ID",
     name = "/demo/parse-server/app_id",
     val  = "<PARSE_SERVER_APPLICATION_ID>",

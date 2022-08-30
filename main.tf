@@ -72,7 +72,7 @@ module "ecs" {
   container_environment_vars = [
     { name = "LOG_LEVEL", value = "DEBUG" },
     { name = "PORT", value = var.container_port },
-    { name = "PARSE_SERVER_URL", value = "http://${module.alb.aws_lb_dns}${var.parse_mount_path}/" },
+    { name = "PARSE_SERVER_URL", value = "http://${module.alb.aws_lb_dns}${var.parse_mount_path}" },
     { name = "PARSE_MOUNT_PATH", value = var.parse_mount_path },
     { name = "DASHBOARD_MOUNT_PATH", value = var.dashboard_mount_path },
     { name = "PARSE_SERVER_APP_NAME", value = "${var.name}_${var.environment}" }
