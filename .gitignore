@@ -4,4 +4,4 @@
 terraform.tfstate
 terraform.tfstate.backup
 secrets.tfvars
-tfplan.plan
+*.plan

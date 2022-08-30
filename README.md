@@ -13,7 +13,7 @@ TODO
 1. create your own `secrets.tfvars` based on `secrets.example.tfvars` and replace the `<PLACEHOLDER>` values.
 1. execute `terraform init` to initialize a configuration directory and to download and install the providers defined in the configuration.
 1. execute `terraform plan -var-file="secrets.tfvars" -var-file="terraform.tfvars" -out="tfplan.plan"` to calculate the changes terraform has to apply and create a plan.
-1. execute changes by `terraform apply` to setup the cloud infrastructure in aws
+1. execute changes by `terraform apply tfplan.plan` to setup the cloud infrastructure in aws
 1. push your docker image to the created AWS ECR repository - this will trigger an automatic deployment in AWS ECS
 
 ## Outputs
