@@ -25,5 +25,8 @@ If your using the free tier M0 of [MongoDB Atlas](https://www.mongodb.com/atlas/
 Best practice would be a DB connection by VPC peering or AWS private private link - unfortunatelly this supported only by dedicated-tier (M10 and above) clusters.
 
 ## Destroy
-Destroy your infrastructure by: `terraform destroy`
+1. Create plan to destroy infrastructure: ``terraform plan -destroy -var-file="secrets.tfvars" -var-file="terraform.tfvars" -out="tfdestroy.plan"`
+1. Delete images from ECR
+1. Destroy your infrastructure by: `terraform apply tfdestroy.plan`
+1. If necessery destroy manually protocol groups in CloudWatch
 
