@@ -39,6 +39,11 @@ variable "dashboard_mount_path" {
   type        = string
 }
 
+variable "alb_tls_cert_arn" {
+  description = "ARN of the certificate that the ALB uses for https"
+  type        = string
+}
+
 // DEFAULT VARIABLES
 
 variable "environment" {

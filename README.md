@@ -24,8 +24,11 @@ After applying the infrstructure some information can be displayed by: `terrafor
 If your using the free tier M0 of [MongoDB Atlas](https://www.mongodb.com/atlas/database) you need to manually specify the ip access list by adding IP adresses of your created NAT Gateways.
 Best practice would be a DB connection by VPC peering or AWS private private link - unfortunatelly this supported only by dedicated-tier (M10 and above) clusters.
 
+## Redepolyment
+`aws ecs update-service --cluster aws-fargate-parse-server-cluster-dev --service aws-fargate-parse-server-service-dev --force-new-deployment`
+
 ## Destroy
-1. Create plan to destroy infrastructure: ``terraform plan -destroy -var-file="secrets.tfvars" -var-file="terraform.tfvars" -out="tfdestroy.plan"`
+1. Create plan to destroy infrastructure: `terraform plan -destroy -var-file="secrets.tfvars" -var-file="terraform.tfvars" -out="tfdestroy.plan"`
 1. Delete images from ECR
 1. Destroy your infrastructure by: `terraform apply tfdestroy.plan`
 1. If necessery destroy manually protocol groups in CloudWatch

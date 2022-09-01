@@ -2,7 +2,6 @@
 
 resource "aws_security_group" "alb" {
   name   = "${var.name}-sg-alb-${var.environment}"
-  description = "ALB allows only access via TCP ports 80"
   vpc_id = var.vpc_id
 
   ingress {
@@ -12,6 +11,16 @@ resource "aws_security_group" "alb" {
     cidr_blocks      = ["0.0.0.0/0"]
     ipv6_cidr_blocks = ["::/0"]
   }
+
+/* ENABLE IF HTTPS IS CONFIGURED
+  ingress {
+    protocol         = "tcp"
+    from_port        = 443
+    to_port          = 443
+    cidr_blocks      = ["0.0.0.0/0"]
+    ipv6_cidr_blocks = ["::/0"]
+  }
+*/
 
   egress {
     protocol         = "-1"

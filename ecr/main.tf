@@ -5,7 +5,7 @@ resource "aws_ecr_repository" "main" {
   image_tag_mutability = "MUTABLE"
 
   image_scanning_configuration {
-    scan_on_push = false // TODO: should be activated for production use?: https://docs.aws.amazon.com/AmazonECR/latest/userguide/image-scanning.html
+    scan_on_push = true
   }
 }
 

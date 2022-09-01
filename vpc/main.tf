@@ -174,3 +174,30 @@ resource "aws_iam_role_policy" "vpc-flow-logs-policy" {
   ]
 })
 }
+
+
+// Use VPC peering for DB connection in production!
+// Altas mongodb network peering NOT available for free tier M0
+// https://www.mongodb.com/docs/atlas/security-vpc-peering/#std-label-vpc-peering
+/*
+// Note: remove this ressource (mongodbatlas_network_container) if you have already an existing Atlas project with configured VPC peering
+resource "mongodbatlas_network_container" "test" {
+  project_id       =  <ATLAS_PROJECT_ID>
+  atlas_cidr_block =  <ATLAS_VPC_CIDR>
+  provider_name    = "AWS"
+  region_name      = "eu-central-1"
+}
+
+resource "aws_route" "peeraccess" {
+  route_table_id            = aws_vpc.main.main_route_table_id
+  destination_cidr_block    = var.cidr
+  vpc_peering_connection_id = var.mongodbatlas_network_peering_connection_id
+  depends_on                = [aws_vpc_peering_connection_accepter.peer]
+}
+
+resource "aws_vpc_peering_connection_accepter" "peer" {
+  vpc_peering_connection_id = var.mongodbatlas_network_peering_connection_id
+  auto_accept               = true
+}
+*/
+

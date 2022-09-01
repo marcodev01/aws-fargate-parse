@@ -37,9 +37,11 @@ module "alb" {
   name                = var.name
   vpc_id              = module.vpc.id
   subnets             = module.vpc.public_subnets
+  container_port      = var.container_port
   environment         = var.environment
   alb_security_groups = [module.security_groups.alb]
   health_check_path   = "${var.parse_mount_path}/health"
+  alb_tls_cert_arn    = var.alb_tls_cert_arn
 }
 
 module "ecr" {
