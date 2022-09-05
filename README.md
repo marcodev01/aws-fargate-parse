@@ -24,8 +24,15 @@ After applying the infrstructure some information can be displayed by: `terrafor
 If your using the free tier M0 of [MongoDB Atlas](https://www.mongodb.com/atlas/database) you need to manually specify the ip access list by adding IP adresses of your created NAT Gateways.
 Best practice would be a DB connection by VPC peering or AWS private private link - unfortunatelly this supported only by dedicated-tier (M10 and above) clusters.
 
-## Redepolyment
-`aws ecs update-service --cluster aws-fargate-parse-server-cluster-dev --service aws-fargate-parse-server-service-dev --force-new-deployment`
+## Deploy new image version
+1. Push new image version with tag `latest` to AWS ECR
+1. To trigger ECS deployment execute: `aws ecs update-service --cluster aws-fargate-parse-server-cluster-dev --service aws-fargate-parse-server-service-dev --force-new-deployment`
+
+## Deploy PWA
+Currently there is a bug when setting up amplify by Terraform the first deployment has to be triggered manually in the amplify console.
+See: https://github.com/hashicorp/terraform-provider-aws/issues/19870
+
+All subsequent pushes to the specified repository are deployment automatically.
 
 ## Destroy
 1. Create plan to destroy infrastructure: `terraform plan -destroy -var-file="secrets.tfvars" -var-file="terraform.tfvars" -out="tfdestroy.plan"`

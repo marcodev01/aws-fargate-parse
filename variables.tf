@@ -46,6 +46,23 @@ variable "alb_tls_cert_arn" {
 
 // DEFAULT VARIABLES
 
+variable "app_repository" {
+  description = "url of the app repository"
+  type        = string
+  default     = null
+}
+
+variable "repository_access_token" {
+  description = "url of the app repository"
+  type        = string
+  default     = null
+}
+
+variable "app_name" {
+  description = "name of the app front-end"
+  type        = string
+  default     = null
+}
 variable "environment" {
   description = "environment: e.g. dev, test, ref, prod"
   type        = string

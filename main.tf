@@ -14,6 +14,13 @@ provider "aws" {
   secret_key = var.aws-secret-key
 }
 
+module "amplify" {
+  source = "./amplify"
+  app_repository = var.app_repository
+  repository_access_token = var.repository_access_token
+  app_name = var.app_name
+}
+
 module "vpc" {
   source             = "./vpc"
   name               = var.name
