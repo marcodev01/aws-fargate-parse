@@ -31,8 +31,8 @@ After applying the infrstructure some information can be displayed by: `terrafor
 Note: If your using the free tier M0 of [MongoDB Atlas](https://www.mongodb.com/atlas/database) you need to manually specify the ip access list by adding IP adresses of your created NAT Gateways.
 
 ### Deploy new Docker image version
-1. Push new image version with tag `latest` to [AWS ECR](https://aws.amazon.com/de/ecr/)
-1. To trigger [AWS ECS](https://aws.amazon.com/de/ecs/) deployment execute: `aws ecs update-service --cluster aws-fargate-parse-server-cluster-dev --service aws-fargate-parse-server-service-dev --force-new-deployment`
+1. Push new image version with tag `latest` to AWS ECR
+1. To trigger AWS ECS deployment execute: `aws ecs update-service --cluster aws-fargate-parse-server-cluster-dev --service aws-fargate-parse-server-service-dev --force-new-deployment`
 
 
 ## Destroy AWS infrastructure
@@ -41,8 +41,8 @@ Note: If your using the free tier M0 of [MongoDB Atlas](https://www.mongodb.com/
 1. Destroy your infrastructure by: `terraform apply tfdestroy.plan`
 1. If necessery delete manually protocol groups in CloudWatch
 
-# Know issues
+# Known issues
 - It is recommended to set up DB connection by [VPC Peering](https://www.mongodb.com/docs/atlas/security-vpc-peering/) or [AWS PrivateLink](https://aws.amazon.com/de/blogs/apn/connecting-applications-securely-to-a-mongodb-atlas-data-plane-with-aws-privatelink/). Those connection types are supported by MongoDB Atlas dedicated clusters (M10 and above) only. Since free tier cluster M0 is used for this demo case either VPC Peering nor AWS PrivateLink is set up currently by terraform. Implement recommended DB connection for production use!   
-- Currently there is a bug when setting up [AWS Amplify](https://aws.amazon.com/de/amplify/) by Terraform - the first intial deployment has to be triggered manually in the amplify console. However, all subsequent pushes to your repository will deployed automatically. Reference: https://github.com/hashicorp/terraform-provider-aws/issues/19870
+- Currently there is a bug when setting up AWS Amplify by Terraform - the first intial deployment has to be triggered manually in the amplify console. However, all subsequent pushes to your repository will deployed automatically. Reference: https://github.com/hashicorp/terraform-provider-aws/issues/19870
 
 
