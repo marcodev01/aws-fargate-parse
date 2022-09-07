@@ -39,21 +39,7 @@ resource "aws_lb_target_group" "main" {
   }
 }
 
-# Redirect traffic to target group
-# NOTE: FOR DEMO PURPOUSES ONLY HTTP CONNECTION IS CONFIGURED
-resource "aws_alb_listener" "http" {
-  load_balancer_arn = aws_lb.main.id
-  port              = 80
-  protocol          = "HTTP"
 
-  default_action {
-    type             = "forward"
-    target_group_arn = aws_lb_target_group.main.id
-  }
-}
-
-
-/* ***USE THIS FOR HTTPS TLS CONNECTIONS***
 # Redirect to https listener
 resource "aws_alb_listener" "http" {
   load_balancer_arn = aws_lb.main.id
@@ -85,4 +71,3 @@ resource "aws_alb_listener" "https" {
         type             = "forward"
     }
 }
-*/

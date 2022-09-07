@@ -4,7 +4,7 @@ environment        = "dev"
 availability_zones = ["eu-central-1a", "eu-central-1b"]
 private_subnets    = ["10.0.0.0/24", "10.0.1.0/24"]
 public_subnets     = ["10.0.3.0/24", "10.0.4.0/24"]
-alb_tls_cert_arn   = null // for demo purpouses http only is configured. Never use this setting for production!
+alb_tls_cert_arn   = "arn:aws:acm:eu-central-1:065927858371:certificate/35133c0f-36df-4030-9460-a6b9e4c43a55"
 
 ### PARSE SERVER VARS ###
 container_port       = 1337
