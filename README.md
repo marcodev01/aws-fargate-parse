@@ -24,11 +24,11 @@ TODO
 1. Configure route forwarding for your domain to the newly created AWS load balancer
 
 ### Outputs
-After applying the infrstructure some information can be displayed by: `terraform output`.
+After applying the infrstructure, some information can be displayed by: `terraform output`.
 - `aws_lb_dns`: DNS of load balancer to access the parse server. 
 - `aws_nat_public_ip_list`: Public IPs of created NAT Gateways four outbound traffic. These IPs are defined as elastic IPs and do not change while runnning the infrastructure.
 
-Note: If you are using the free tier M0 of MongoDB Atlas you need to manually specify the ip access list by adding IP adresses of the created NAT Gateways.
+Note: If you are using the free tier M0 of MongoDB Atlas you need to manually specify the IP access list by adding the IP adresses of the created NAT Gateways. See also: [Known issues](#known-issues)
 
 ### Deploy new Docker image version
 1. Push new image version with tag `latest` to AWS ECR
@@ -39,14 +39,14 @@ Note: If you are using the free tier M0 of MongoDB Atlas you need to manually sp
 1. Create plan to destroy infrastructure: `terraform plan -destroy -var-file="secrets.tfvars" -var-file="terraform.tfvars" -out="tfdestroy.plan"`
 1. Delete images from ECR (otherwise destruction of ECR by terraform will fail)
 1. Destroy infrastructure by: `terraform apply tfdestroy.plan`
-1. If necessery delete manually protocol groups in CloudWatch
+1. If necessery delete manually left over protocol groups in CloudWatch
 
 # App hosting
-- The PWA (Progressive Web App) is hosted with [AWS Amplify](https://aws.amazon.com/de/amplify/). The service is configured by terraform in this setup. You need to specify a *repository url* and *acess key* in `*.tfvars`. The build and deployment is automatically managed by Amplify (except on infrastructure setup - see [Known issues](#known-issues)).
-- If you need to serve static ressources only, you can specify serving endpoints with expressJS which parse server is runned on. See: parse-server-example project.
-    - Alternatively you can use AWS S3 with SSL/TLS secured CloudFront (Improved performance). Reference: https://docs.aws.amazon.com/AmazonS3/latest/userguide/WebsiteHosting.html. 
+- The PWA (Progressive Web App) is hosted with [AWS Amplify](https://aws.amazon.com/de/amplify/). The service is configured by terraform in this setup. You need to specify a ***repository url*** and ***acess key*** in `*.tfvars`. The build and deployment is automatically managed by Amplify (exception for infrastructure setup - see [Known issues](#known-issues)).
+- If you need to serve static ressources only, you can specify serving endpoints on your Parse Server with [expressJS](https://expressjs.com/) which Parse Server is mounted on.
+    - Alternatively you can use AWS S3 with SSL/TLS secured CloudFront - for better response time. Reference: https://docs.aws.amazon.com/AmazonS3/latest/userguide/WebsiteHosting.html. 
 
-Delete or replace the terraform *amplify module* for project tailored App setup.
+Delete or replace the terraform *amplify module* for project tailored App setup without PWA.
 
 
 # Known issues
