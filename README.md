@@ -42,8 +42,9 @@ Note: If you are using the free tier M0 of MongoDB Atlas you need to manually sp
 1. If necessery delete manually protocol groups in CloudWatch
 
 # App hosting
-- For simple PWA (Progressive Web App) hosting **AWS Amplify** is configured by terraform in this setup. You need to specify a *repository url* and *acess key* in `*.tfvars`. The build and deployment is automatically managed by Amplify (except on infrastructure setup - see [Known issues](#known-issues)).
-- If you need to serve static ressources only, AWS S3 with SSL/TLS secured CloudFront is recommended. Reference: https://docs.aws.amazon.com/AmazonS3/latest/userguide/WebsiteHosting.html. 
+- The PWA (Progressive Web App) is hosted with [AWS Amplify](https://aws.amazon.com/de/amplify/). The service is configured by terraform in this setup. You need to specify a *repository url* and *acess key* in `*.tfvars`. The build and deployment is automatically managed by Amplify (except on infrastructure setup - see [Known issues](#known-issues)).
+- If you need to serve static ressources only, you can specify serving endpoints with expressJS which parse server is runned on. See: parse-server-example project.
+    - Alternatively you can use AWS S3 with SSL/TLS secured CloudFront (Improved performance). Reference: https://docs.aws.amazon.com/AmazonS3/latest/userguide/WebsiteHosting.html. 
 
 Delete or replace the terraform *amplify module* for project tailored App setup.
 

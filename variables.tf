@@ -39,6 +39,11 @@ variable "dashboard_mount_path" {
   type        = string
 }
 
+variable "parse_server_url" {
+  description = "https url to access parse server"
+  type        = string
+}
+
 variable "alb_tls_cert_arn" {
   description = "ARN of the certificate used by the https listener of the ALB"
   type        = string
