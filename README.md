@@ -5,8 +5,8 @@ IaC by terraform specification to create cloud infrastructure for running docker
 TODO
 
 # Getting started
-1. install **terraform-cli** 
-1. install **aws-cli**
+1. Install **terraform-cli** 
+1. Install **aws-cli**
     - configure your crendentials in aws-cli: `aws configure`
 
 ## Preconditions
