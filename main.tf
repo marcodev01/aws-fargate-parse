@@ -15,10 +15,10 @@ provider "aws" {
 }
 
 module "amplify" {
-  source = "./amplify"
-  app_repository = var.app_repository
+  source                  = "./amplify"
+  app_repository          = var.app_repository
   repository_access_token = var.repository_access_token
-  app_name = var.app_name
+  app_name                = var.app_name
 }
 
 module "vpc" {

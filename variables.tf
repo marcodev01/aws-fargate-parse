@@ -40,7 +40,7 @@ variable "dashboard_mount_path" {
 }
 
 variable "alb_tls_cert_arn" {
-  description = "ARN of the certificate that the ALB uses for https"
+  description = "ARN of the certificate used by the https listener of the ALB"
   type        = string
 }
 
