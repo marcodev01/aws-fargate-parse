@@ -12,7 +12,6 @@ resource "aws_security_group" "alb" {
     ipv6_cidr_blocks = ["::/0"]
   }
 
-/* ENABLE IF HTTPS IS CONFIGURED
   ingress {
     protocol         = "tcp"
     from_port        = 443
@@ -20,7 +19,6 @@ resource "aws_security_group" "alb" {
     cidr_blocks      = ["0.0.0.0/0"]
     ipv6_cidr_blocks = ["::/0"]
   }
-*/
 
   egress {
     protocol         = "-1"

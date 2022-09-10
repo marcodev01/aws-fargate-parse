@@ -39,13 +39,35 @@ variable "dashboard_mount_path" {
   type        = string
 }
 
+variable "parse_server_url" {
+  description = "https url to access parse server"
+  type        = string
+}
+
 variable "alb_tls_cert_arn" {
-  description = "ARN of the certificate that the ALB uses for https"
+  description = "ARN of the certificate used by the https listener of the ALB"
   type        = string
 }
 
 // DEFAULT VARIABLES
 
+variable "app_repository" {
+  description = "url of the app repository"
+  type        = string
+  default     = null
+}
+
+variable "repository_access_token" {
+  description = "url of the app repository"
+  type        = string
+  default     = null
+}
+
+variable "app_name" {
+  description = "name of the app front-end"
+  type        = string
+  default     = null
+}
 variable "environment" {
   description = "environment: e.g. dev, test, ref, prod"
   type        = string

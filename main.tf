@@ -14,6 +14,13 @@ provider "aws" {
   secret_key = var.aws-secret-key
 }
 
+module "amplify" {
+  source                  = "./amplify"
+  app_repository          = var.app_repository
+  repository_access_token = var.repository_access_token
+  app_name                = var.app_name
+}
+
 module "vpc" {
   source             = "./vpc"
   name               = var.name
@@ -74,7 +81,7 @@ module "ecs" {
   container_environment_vars = [
     { name = "LOG_LEVEL", value = "DEBUG" },
     { name = "PORT", value = var.container_port },
-    { name = "PARSE_SERVER_URL", value = "http://${module.alb.aws_lb_dns}${var.parse_mount_path}" },
+    { name = "PARSE_SERVER_URL", value = var.parse_server_url },
     { name = "PARSE_MOUNT_PATH", value = var.parse_mount_path },
     { name = "DASHBOARD_MOUNT_PATH", value = var.dashboard_mount_path },
     { name = "PARSE_SERVER_APP_NAME", value = "${var.name}_${var.environment}" }
