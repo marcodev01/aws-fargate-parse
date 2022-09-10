@@ -10,7 +10,7 @@ alb_tls_cert_arn   = "arn:aws:acm:eu-central-1:065927858371:certificate/35133c0f
 container_port       = 1337
 parse_mount_path     = "/parse"
 dashboard_mount_path = "/dashboard"
-parse_server_url     = "https://parse-server-example.awesome24.de"
+parse_server_url     = "https://parse-server-example.awesome24.de/parse"
 
 
 ### PWA VARS (vue.js related) ###
