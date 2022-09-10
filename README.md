@@ -43,10 +43,10 @@ Note: If you are using the free tier M0 of MongoDB Atlas you need to manually sp
 
 # App hosting
 - The PWA (Progressive Web App) is hosted with [AWS Amplify](https://aws.amazon.com/de/amplify/). The service is configured by terraform in this setup. You need to specify a ***repository url*** and ***acess key*** in `*.tfvars`. The build and deployment is automatically managed by Amplify (exception for infrastructure setup - see [Known issues](#known-issues)).
-- If you need to serve static ressources only, you can specify serving endpoints on your Parse Server with [expressJS](https://expressjs.com/) which Parse Server is mounted on.
-    - Alternatively you can use AWS S3 with SSL/TLS secured CloudFront - for better response time. Reference: https://docs.aws.amazon.com/AmazonS3/latest/userguide/WebsiteHosting.html. 
+- If you don't need to host your app on a dedicated web server, but just want to serve static ressources, [expressJS](https://expressjs.com/) - which Parse Server is mounted on - provides a bult-in middleware function for serving static files. See documentation: https://expressjs.com/en/starter/static-files.html
+    - Alternatively you can use AWS S3 with SSL/TLS secured CloudFront for low latency. Reference: https://docs.aws.amazon.com/AmazonS3/latest/userguide/WebsiteHosting.html. 
 
-Delete or replace the terraform *amplify module* for project tailored App setup without PWA.
+Delete or replace the terraform `/amplify` module for project tailored App setup without PWA.
 
 
 # Known issues
