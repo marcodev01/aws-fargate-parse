@@ -2,7 +2,7 @@
 IaC by terraform specification to create cloud infrastructure for running dockerized parse-server on aws.
 
 ## Architecure
-TODO
+![image architecture](./assets/architecture.png)
 
 # Getting started
 1. Install **terraform-cli** 
