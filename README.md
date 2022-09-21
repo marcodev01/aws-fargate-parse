@@ -1,7 +1,7 @@
 # aws-fargate-parse
 IaC by terraform specification to create cloud infrastructure for running dockerized parse-server on aws.
 
-## Architecure
+## Architecture
 ![image architecture](./assets/architecture.png)
 
 # Getting started
